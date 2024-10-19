@@ -25,10 +25,7 @@ app.use('/api/user', userRoutes);
 app.use('/api/product', productRoutes);
 
 // Conectar a MongoDB
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
+mongoose.connect(process.env.MONGO_URI) // Asegúrate de que MONGO_URI esté definida en .env
   .then(() => console.log('MongoDB conectado localmente'))
   .catch(err => console.log('Error conectando a MongoDB:', err));
 
@@ -37,6 +34,7 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
+
 app.get('/test', (req, res) => {
     res.send('Ruta de prueba funcionando');
-  });
+});

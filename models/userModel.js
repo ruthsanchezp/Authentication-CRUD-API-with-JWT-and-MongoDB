@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
     name: { type: String, required: true },
@@ -7,14 +6,16 @@ const userSchema = new mongoose.Schema({
     password: { type: String, required: true }
 });
 
+// Eliminar el middleware de hash de la contraseña
 userSchema.pre('save', async function(next) {
-    if (!this.isModified('password')) return next();
-    this.password = await bcrypt.hash(this.password, 10);
+    // No necesitas hashear la contraseña, simplemente pasa al siguiente middleware
     next();
 });
 
+// Eliminar el método de comparación de contraseña
 userSchema.methods.comparePassword = async function(password) {
-    return await bcrypt.compare(password, this.password);
+    // Comparar directamente las contraseñas
+    return password === this.password; // Comparar en texto plano
 };
 
 module.exports = mongoose.model('User', userSchema);

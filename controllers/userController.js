@@ -1,22 +1,18 @@
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
 
 // Registrar usuario
 exports.registerUser = async (req, res) => {
     const { name, email, password } = req.body;
     try {
-        // Verificar si el email ya está registrado
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ message: 'El email ya está registrado' });
         }
 
-        // Crear el nuevo usuario
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = await User.create({ name, email, password: hashedPassword });
+        // Crear el nuevo usuario sin encriptar la contraseña
+        const newUser = await User.create({ name, email, password: password }); // Sin hashear
 
-        // Eliminar la contraseña antes de devolver la respuesta
         const { password: _, ...userWithoutPassword } = newUser.toObject();
         res.status(201).json(userWithoutPassword);
     } catch (error) {
@@ -29,7 +25,7 @@ exports.loginUser = async (req, res) => {
     const { email, password } = req.body;
     try {
         const user = await User.findOne({ email });
-        if (!user || !(await bcrypt.compare(password, user.password))) {
+        if (!user || user.password !== password) { // Comparar directamente
             return res.status(401).json({ message: 'Credenciales incorrectas' });
         }
 
@@ -64,10 +60,8 @@ exports.updateUser = async (req, res) => {
             return res.status(404).json({ message: 'Usuario no encontrado' });
         }
 
-        // Si hay una contraseña nueva, hashearla antes de guardar
-        if (password) {
-            user.password = await bcrypt.hash(password, 10);
-        }
+        // Actualizar la contraseña directamente si se proporciona
+        user.password = password || user.password;
 
         // Actualizar los demás datos del usuario
         user.name = name || user.name;
