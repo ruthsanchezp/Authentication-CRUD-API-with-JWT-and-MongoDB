@@ -1,14 +1,14 @@
-// Supón que esta es la contraseña que estás tratando de comparar
+// contraseña tratando de comparar
 const inputPassword = '123456';
 
-// La contraseña almacenada en la base de datos (en texto plano)
-const storedPassword = '123456'; // Cambia esto a tu contraseña real almacenada
+// contraseña almacenada en la base de datos 
+const storedPassword = '123456'; 
 
-// Función para comprobar la contraseña
+//  comprobar la contraseña
 const checkPassword = () => {
-  const isMatch = inputPassword === storedPassword; // Comparar directamente
-  console.log("Las contraseñas coinciden:", isMatch); // Esto debería ser true si la comparación es correcta
+  const isMatch = inputPassword === storedPassword; // comparar directamente
+  console.log("Las contraseñas coinciden:", isMatch); // true si la comparación es correcta
 };
 
-// Ejecutar la función
+// 
 checkPassword();
