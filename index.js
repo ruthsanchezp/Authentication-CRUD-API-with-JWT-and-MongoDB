@@ -24,9 +24,9 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/api/user', userRoutes);
 app.use('/api/product', productRoutes);
 
-// Conectar a MongoDB
+// Conectar a MongoDB Atlas
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('MongoDB conectado localmente'))
+  .then(() => console.log('Conectado a MongoDB Atlas'))
   .catch(err => console.log('Error conectando a MongoDB:', err));
 
 // Iniciar el servidor
@@ -35,6 +35,7 @@ app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
 
+// Ruta de prueba
 app.get('/test', (req, res) => {
     res.send('Ruta de prueba funcionando');
 });
