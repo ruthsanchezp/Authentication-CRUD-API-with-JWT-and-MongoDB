@@ -1,6 +1,6 @@
 const express = require('express'); 
 const { createProduct, readAllProducts, readOneProduct, updateProduct, deleteProduct } = require('../controllers/productController');
-const verifyTokenMiddleware = require('../controllers/authMiddleware'); // Importa el middleware de autenticación
+const verifyTokenMiddleware = require('../controllers/authMiddleware'); // Importar el middleware de autenticación
 
 const router = express.Router();
 

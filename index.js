@@ -25,7 +25,7 @@ app.use('/api/user', userRoutes);
 app.use('/api/product', productRoutes);
 
 // Conectar a MongoDB
-mongoose.connect(process.env.MONGO_URI) // Asegúrate de que MONGO_URI esté definida en .env
+mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB conectado localmente'))
   .catch(err => console.log('Error conectando a MongoDB:', err));
 
