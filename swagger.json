@@ -1,0 +1,347 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "User & Product Management API",
+      "version": "1.0.0",
+      "description": "This API manages users and their associated products. It handles user authentication, authorization, and CRUD operations for products."
+    },
+    "servers": [
+      {
+        "url": "http://localhost:3000",
+        "description": "Local server"
+      }
+    ],
+    "components": {
+      "schemas": {
+        "User": {
+          "type": "object",
+          "required": ["name", "email", "password"],
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "The user's name"
+            },
+            "email": {
+              "type": "string",
+              "description": "The user's email address",
+              "format": "email"
+            },
+            "password": {
+              "type": "string",
+              "description": "The user's password"
+            }
+          }
+        },
+        "Product": {
+          "type": "object",
+          "required": ["name", "description", "price"],
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "The product's name"
+            },
+            "description": {
+              "type": "string",
+              "description": "A detailed description of the product"
+            },
+            "price": {
+              "type": "number",
+              "description": "The price of the product"
+            },
+            "user": {
+              "type": "string",
+              "description": "The ID of the user who owns the product"
+            }
+          }
+        },
+        "Token": {
+          "type": "object",
+          "properties": {
+            "token": {
+              "type": "string",
+              "description": "JWT token for authentication"
+            }
+          }
+        }
+      },
+      "securitySchemes": {
+        "BearerAuth": {
+          "type": "http",
+          "scheme": "bearer",
+          "bearerFormat": "JWT"
+        }
+      }
+    },
+    "security": [
+      {
+        "BearerAuth": []
+      }
+    ],
+    "paths": {
+      "/api/user/register": {
+        "post": {
+          "summary": "Register a new user",
+          "tags": ["User"],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "User created successfully"
+            },
+            "400": {
+              "description": "Invalid input data"
+            }
+          }
+        }
+      },
+      "/api/user/login": {
+        "post": {
+          "summary": "Login an existing user",
+          "tags": ["User"],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["email", "password"],
+                  "properties": {
+                    "email": {
+                      "type": "string",
+                      "description": "User's email"
+                    },
+                    "password": {
+                      "type": "string",
+                      "description": "User's password"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "User logged in successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Token"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Invalid credentials"
+            }
+          }
+        }
+      },
+      "/api/user/verifytoken": {
+        "get": {
+          "summary": "Verify JWT token",
+          "tags": ["User"],
+          "responses": {
+            "200": {
+              "description": "Token is valid"
+            },
+            "401": {
+              "description": "Invalid or missing token"
+            }
+          }
+        }
+      },
+      "/api/user/update": {
+        "put": {
+          "summary": "Update user profile",
+          "tags": ["User"],
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "User updated successfully"
+            },
+            "400": {
+              "description": "Invalid input data"
+            }
+          }
+        }
+      },
+      "/api/product/create": {
+        "post": {
+          "summary": "Create a new product",
+          "tags": ["Product"],
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Product created successfully"
+            },
+            "400": {
+              "description": "Invalid input data"
+            }
+          }
+        }
+      },
+      "/api/product/readall": {
+        "get": {
+          "summary": "Get all products",
+          "tags": ["Product"],
+          "responses": {
+            "200": {
+              "description": "List of products",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Product"
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Error fetching products"
+            }
+          }
+        }
+      },
+      "/api/product/readone/{id}": {
+        "get": {
+          "summary": "Get a single product by ID",
+          "tags": ["Product"],
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "schema": {
+                "type": "string"
+              },
+              "description": "Product ID"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Product details",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Product"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Product not found"
+            }
+          }
+        }
+      },
+      "/api/product/update/{id}": {
+        "put": {
+          "summary": "Update a product by ID",
+          "tags": ["Product"],
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ],
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "schema": {
+                "type": "string"
+              },
+              "description": "Product ID"
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Product updated successfully"
+            },
+            "404": {
+              "description": "Product not found"
+            }
+          }
+        }
+      },
+      "/api/product/delete/{id}": {
+        "delete": {
+          "summary": "Delete a product by ID",
+          "tags": ["Product"],
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ],
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "schema": {
+                "type": "string"
+              },
+              "description": "Product ID"
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": "Product deleted successfully"
+            },
+            "404": {
+              "description": "Product not found"
+            }
+          }
+        }
+      }
+    }
+  }
+  
